@@ -9,6 +9,17 @@ const audioEnabledToggle = document.getElementById("audioEnabledToggle");
 const correctSound = new Audio("./audio/correct.mp3");
 const incorrectSound = new Audio("./audio/incorrect.mp3");
 
+let forceUppercase = false;
+const toggleUppercaseButton = document.getElementById("toggleUppercaseButton");
+
+if (toggleUppercaseButton) {
+  toggleUppercaseButton.addEventListener("click", () => {
+    forceUppercase = !forceUppercase;
+    toggleUppercaseButton.textContent = forceUppercase ? "🔡 Show lowercase" : "🔠 Show UPPERCASE";
+    if (typeof renderCurrentPrompt === "function") renderCurrentPrompt();
+  });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   const loader = document.getElementById("loader");
   const app = document.getElementById("app");
@@ -38,6 +49,10 @@ window.addEventListener('DOMContentLoaded', () => {
     loader.innerHTML = "❌ Failed to load Auntie Reader. Check your console.";
   });
 });
+
+function normalize(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]/gi, "").trim();
+}
 
 function initializeAuntieReader() {
   const promptDiv = document.getElementById("prompt");
@@ -98,13 +113,12 @@ function initializeAuntieReader() {
     currentEntry = entry;
     console.log("Picked entry:", entry);
 
-    let displayText = "";
-    let expectedInput = "";
     const mode = modeSelect.value;
 
     if (mode === "phonics" || mode === "alphabet") {
-      displayText = entry.letter;
-      expectedInput = entry.letter;
+      setupPhonemeClickable(entry.letter);
+      promptDiv.innerText = entry.letter;
+      currentWord = entry.letter;
 
       let parts = [];
       if (!toggleLetter || toggleLetter.checked) parts.push(entry.letter);
@@ -121,19 +135,15 @@ function initializeAuntieReader() {
       } else {
         imageElement.style.display = "none";
       }
-
-      setupPhonemeClickable(displayText);
     } else {
-      displayText = entry.word;
-      expectedInput = entry.word;
+      setupPhonemeClickable(entry.word);
+      promptDiv.innerText = forceUppercase ? entry.word.toUpperCase() : entry.word;
+      currentWord = entry.word;
       say(entry.audio || entry.word);
       instructionDiv.textContent = "";
       imageElement.style.display = "none";
-      setupPhonemeClickable(displayText);
     }
 
-    promptDiv.innerText = displayText;
-    currentWord = expectedInput;
     inputBox.value = "";
     inputBox.focus();
     feedback.textContent = "";
@@ -170,12 +180,12 @@ function initializeAuntieReader() {
     let isCorrect;
     if (Array.isArray(currentWord)) {
       isCorrect = currentWord.some(w =>
-        caseToggle.checked ? value === w : value.toLowerCase() === w.toLowerCase()
+        caseToggle.checked ? value === w : normalize(value) === normalize(w)
       );
     } else {
       isCorrect = caseToggle.checked
         ? value === currentWord
-        : value.toLowerCase() === currentWord.toLowerCase();
+        : normalize(value) === normalize(currentWord);
     }
 
     totalCount++;
@@ -231,7 +241,7 @@ function initializeAuntieReader() {
 
     phonemes.forEach((phoneme) => {
       const span = document.createElement("span");
-      span.textContent = phoneme.toUpperCase();
+      span.textContent = forceUppercase ? phoneme.toUpperCase() : phoneme;
       span.style.margin = "0 2px";
       span.style.cursor = "pointer";
       span.setAttribute("data-sound", phoneme);
