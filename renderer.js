@@ -2,6 +2,8 @@
 let alphabetDeck = [], wordDeck = [], phonicsDeck = [], sentenceDeck = [];
 let currentWord = "";
 let currentDeck = [];
+let mistakes = [];
+let currentEntry = null;
 
 const audioEnabledToggle = document.getElementById("audioEnabledToggle");
 
@@ -44,6 +46,7 @@ function initializeAuntieReader() {
   const instructionDiv = document.getElementById("instruction");
   const imageElement = document.getElementById("exampleImage");
   const nextButton = document.getElementById("nextButton");
+  const repeatButton = document.getElementById("repeatButton");
 
   const toggleLetter = document.getElementById("toggleLetter");
   const toggleEmoji = document.getElementById("toggleEmoji");
@@ -64,6 +67,19 @@ function initializeAuntieReader() {
     speechSynthesis.speak(msg);
   }
 
+  function repeatAudio() {
+    if (!currentEntry) return;
+    const mode = modeSelect.value;
+    if (mode === "phonics" || mode === "alphabet") {
+      let parts = [];
+      if (!toggleLetter || toggleLetter.checked) parts.push(currentEntry.letter);
+      if (!toggleExample || toggleExample.checked) parts.push("as in " + currentEntry.example);
+      if (parts.length) say(parts.join(" "));
+    } else {
+      say(currentEntry.audio || currentEntry.word);
+    }
+  }
+
   function updateDeckFromMode() {
     const mode = modeSelect.value;
     if (mode === "alphabet" || mode === "phonics") currentDeck = [...alphabetDeck];
@@ -76,6 +92,7 @@ function initializeAuntieReader() {
     updateDeckFromMode();
 
     const entry = currentDeck[Math.floor(Math.random() * currentDeck.length)];
+    currentEntry = entry;
     console.log("Picked entry:", entry);
 
     let displayText = "";
@@ -136,6 +153,12 @@ function initializeAuntieReader() {
     });
   }
 
+  if (repeatButton) {
+    repeatButton.addEventListener("click", () => {
+      repeatAudio();
+    });
+  }
+
   function checkAnswer() {
     isWaiting = true;
     const value = inputBox.value.trim();
@@ -160,6 +183,8 @@ function initializeAuntieReader() {
       correctCount++;
     } else {
       feedback.textContent = `❌ Try again! You typed "${value}", expected "${Array.isArray(currentWord) ? currentWord.join(' or ') : currentWord}"`;
+      mistakes.push({ prompt: promptDiv.innerText, typed: value, expected: currentWord });
+      console.log("Mistakes so far:", mistakes);
     }
 
     progress.textContent = `Score: ${correctCount} / ${totalCount}`;
