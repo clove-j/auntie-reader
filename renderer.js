@@ -10,6 +10,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const app = document.getElementById("app");
   const audio = document.getElementById("loadingSound");
 
+  loader.innerText = "Loading Auntie Reader..."; // simple text
+
   Promise.all([
     fetch('./decks/phonics-alphabet.json').then(res => res.json()),
     fetch('./decks/english.json').then(res => res.json()),
@@ -21,16 +23,12 @@ window.addEventListener('DOMContentLoaded', () => {
     currentDeck = [...alphabetDeck, ...wordDeck];
 
     setTimeout(() => {
-      loader.style.opacity = 0;
-      setTimeout(() => loader.style.display = "none", 1000);
-
+      loader.style.display = "none";
       app.style.display = "block";
       app.style.opacity = 1;
-
       if (audio) audio.remove();
-
       initializeAuntieReader();
-    }, 3000);
+    }, 1000);
   }).catch(err => {
     console.error("Failed to load decks:", err);
     loader.innerHTML = "❌ Failed to load Auntie Reader. Check your console.";
@@ -199,3 +197,4 @@ function initializeAuntieReader() {
 
   pickRandomWord();
 }
+
