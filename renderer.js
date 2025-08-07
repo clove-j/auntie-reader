@@ -83,7 +83,7 @@ function initializeAuntieReader() {
 
     if (mode === "phonics" || mode === "alphabet") {
       displayText = entry.letter;
-      expectedInput = [entry.letter, entry.example];
+      expectedInput = entry.letter;
 
       let parts = [];
       if (!toggleLetter || toggleLetter.checked) parts.push(entry.letter);
@@ -109,7 +109,9 @@ function initializeAuntieReader() {
       setupPhonemeClickable(displayText);
     }
 
+    promptDiv.innerText = displayText;
     currentWord = expectedInput;
+    inputBox.value = "";
     inputBox.focus();
   }
 
@@ -197,4 +199,3 @@ function initializeAuntieReader() {
 
   pickRandomWord();
 }
-
