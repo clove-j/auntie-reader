@@ -11,13 +11,12 @@ window.addEventListener('DOMContentLoaded', () => {
   const audio = document.getElementById("loadingSound");
 
   Promise.all([
-    fetch('./decks/alphabet-phonics-fixed.json').then(res => res.json()),
+    fetch('./decks/phonics-alphabet.json').then(res => res.json()),
     fetch('./decks/english.json').then(res => res.json()),
     fetch('./decks/basic-sentences.json').then(res => res.json())
-  ]).then(([alphabet, words, phonics, sentences]) => {
+  ]).then(([alphabet, words, sentences]) => {
     alphabetDeck = alphabet;
     wordDeck = words;
-    phonicsDeck = phonics;
     sentenceDeck = sentences;
     currentDeck = [...alphabetDeck, ...wordDeck];
 
@@ -67,8 +66,7 @@ function initializeAuntieReader() {
 
   function updateDeckFromMode() {
     const mode = modeSelect.value;
-    if (mode === "alphabet") currentDeck = [...alphabetDeck];
-    else if (mode === "phonics") currentDeck = [...phonicsDeck];
+    if (mode === "alphabet" || mode === "phonics") currentDeck = [...alphabetDeck];
     else if (mode === "words") currentDeck = [...wordDeck];
     else if (mode === "sentences") currentDeck = [...sentenceDeck];
     else currentDeck = [...alphabetDeck, ...wordDeck];
@@ -85,7 +83,7 @@ function initializeAuntieReader() {
     let expectedInput = "";
     const mode = modeSelect.value;
 
-    if (mode === "phonics") {
+    if (mode === "phonics" || mode === "alphabet") {
       displayText = entry.letter;
       expectedInput = [entry.letter, entry.example];
 
@@ -201,4 +199,3 @@ function initializeAuntieReader() {
 
   pickRandomWord();
 }
-
