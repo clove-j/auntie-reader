@@ -137,11 +137,16 @@ function initializeAuntieReader() {
       totalCount++;
 
       if (isCorrect) {
-        feedback.textContent = "✅ Correct!";
-        correctCount++;
-      } else {
-        feedback.textContent = `❌ Try again! You typed "${value}", expected "${Array.isArray(currentWord) ? currentWord.join(' or ') : currentWord}"`;
-      }
+  feedback.textContent = "✅ Correct!";
+  correctCount++;
+
+  setTimeout(() => {
+    pickRandomWord();
+  }, 800);
+} else {
+  feedback.textContent = `❌ Try again! You typed "${value}", expected "${Array.isArray(currentWord) ? currentWord.join(' or ') : currentWord}"`;
+}
+
 
       progress.textContent = `Score: ${correctCount} / ${totalCount}`;
       inputBox.value = "";
