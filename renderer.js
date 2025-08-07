@@ -43,6 +43,7 @@ function initializeAuntieReader() {
   const modeSelect = document.getElementById("modeSelect");
   const instructionDiv = document.getElementById("instruction");
   const imageElement = document.getElementById("exampleImage");
+  const nextButton = document.getElementById("nextButton");
 
   const toggleLetter = document.getElementById("toggleLetter");
   const toggleEmoji = document.getElementById("toggleEmoji");
@@ -71,7 +72,6 @@ function initializeAuntieReader() {
   }
 
   function pickRandomWord() {
-    if (isWaiting) return;
     updateDeckFromMode();
 
     const entry = currentDeck[Math.floor(Math.random() * currentDeck.length)];
@@ -146,13 +146,14 @@ function initializeAuntieReader() {
       progress.textContent = `Score: ${correctCount} / ${totalCount}`;
       inputBox.value = "";
       inputBox.focus();
-
-      setTimeout(() => {
-        isWaiting = false;
-        pickRandomWord();
-      }, 800);
     }
   });
+
+  if (nextButton) {
+    nextButton.addEventListener("click", () => {
+      pickRandomWord();
+    });
+  }
 
   function splitToPhonemes(word) {
     const digraphs = ['ch', 'sh', 'th', 'ph', 'wh'];

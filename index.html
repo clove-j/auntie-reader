@@ -56,42 +56,45 @@
     <p>Loading Auntie Reader...</p>
   </div>
 
-  <!-- 📚 Main App -->
-  <div id="app">
-    <label style="margin-left: 15px;">
-      <input type="checkbox" id="audioEnabledToggle" checked>
-      🔈 Enable Spoken Audio
-    </label>
+<!-- 📚 Main App -->
+<div id="app">
+  <label style="margin-left: 15px;">
+    <input type="checkbox" id="audioEnabledToggle" checked>
+    🔈 Enable Spoken Audio
+  </label>
 
-    <h1>Auntie Reader</h1>
+  <h1>Auntie Reader</h1>
 
-    <h2>Select Mode:</h2>
-    <select id="modeSelect">
-      <option value="phonics" selected>Phonics Alphabet</option>
-      <option value="words">Words Only</option>
-      <option value="mixed">Mixed</option>
-      <option value="sentences">Sentences</option>
-    </select>
+  <h2>Select Mode:</h2>
+  <select id="modeSelect">
+    <option value="phonics" selected>Phonics Alphabet</option>
+    <option value="words">Words Only</option>
+    <option value="mixed">Mixed</option>
+    <option value="sentences">Sentences</option>
+  </select>
 
-    <label>
-      <input type="checkbox" id="caseToggle" />
-      Case-sensitive (exact match)
-    </label>
+  <label>
+    <input type="checkbox" id="caseToggle" />
+    Case-sensitive (exact match)
+  </label>
 
-    <!-- 🔘 Toggles for letter, emoji, and example -->
-    <div style="margin-top: 10px;">
-      <label><input type="checkbox" id="toggleLetter" checked /> Show Letter</label>
-      <label><input type="checkbox" id="toggleEmoji" checked style="margin-left: 15px;" /> Show Emoji</label>
-      <label><input type="checkbox" id="toggleExample" checked style="margin-left: 15px;" /> Show Example</label>
-    </div>
-
-    <div id="prompt">Loading...</div>
-    <div id="instruction"></div>
-    <img id="exampleImage" />
-    <input id="input" type="text" maxlength="100" autofocus />
-    <div id="feedback"></div>
-    <div id="progress"></div>
+  <!-- 🔘 Toggles for letter, emoji, and example -->
+  <div style="margin-top: 10px;">
+    <label><input type="checkbox" id="toggleLetter" checked /> Show Letter</label>
+    <label><input type="checkbox" id="toggleEmoji" checked style="margin-left: 15px;" /> Show Emoji</label>
+    <label><input type="checkbox" id="toggleExample" checked style="margin-left: 15px;" /> Show Example</label>
   </div>
+
+  <div id="prompt">Loading...</div>
+  <div id="instruction"></div>
+  <div id="exampleImage"></div>
+
+  <input id="input" type="text" maxlength="100" autofocus />
+  <div id="feedback"></div>
+  <div id="progress"></div>
+  <button id="nextButton" style="margin-top: 10px;">Next</button>
+</div>
+
 
   <!-- JS -->
   <script src="renderer.js"></script>
