@@ -52,12 +52,13 @@ function initializeAuntieReader() {
   let correctCount = 0;
   let totalCount = 0;
   let isWaiting = false;
+  let answerChecked = false;
 
   function say(text) {
     if (audioEnabledToggle && !audioEnabledToggle.checked) return;
     speechSynthesis.cancel();
     const msg = new SpeechSynthesisUtterance(text);
-    msg.rate = 0.9;
+    msg.rate = 0.75;
     msg.pitch = 1.2;
     msg.voice = speechSynthesis.getVoices().find(v => v.lang.startsWith("en"));
     speechSynthesis.speak(msg);
@@ -115,49 +116,55 @@ function initializeAuntieReader() {
     currentWord = expectedInput;
     inputBox.value = "";
     inputBox.focus();
+    feedback.textContent = "";
+    answerChecked = false;
   }
 
   inputBox.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !isWaiting) {
-      isWaiting = true;
-      const value = inputBox.value.trim();
-      const caseToggle = document.getElementById("caseToggle");
-
-      let isCorrect;
-      if (Array.isArray(currentWord)) {
-        isCorrect = currentWord.some(w =>
-          caseToggle.checked ? value === w : value.toLowerCase() === w.toLowerCase()
-        );
-      } else {
-        isCorrect = caseToggle.checked
-          ? value === currentWord
-          : value.toLowerCase() === currentWord.toLowerCase();
-      }
-
-      totalCount++;
-
-      if (isCorrect) {
-  feedback.textContent = "✅ Correct!";
-  correctCount++;
-
-  setTimeout(() => {
-    pickRandomWord();
-  }, 800);
-} else {
-  feedback.textContent = `❌ Try again! You typed "${value}", expected "${Array.isArray(currentWord) ? currentWord.join(' or ') : currentWord}"`;
-}
-
-
-      progress.textContent = `Score: ${correctCount} / ${totalCount}`;
-      inputBox.value = "";
-      inputBox.focus();
+      checkAnswer();
     }
   });
 
   if (nextButton) {
     nextButton.addEventListener("click", () => {
-      pickRandomWord();
+      if (!answerChecked) {
+        checkAnswer();
+      } else {
+        pickRandomWord();
+      }
     });
+  }
+
+  function checkAnswer() {
+    isWaiting = true;
+    const value = inputBox.value.trim();
+    const caseToggle = document.getElementById("caseToggle");
+
+    let isCorrect;
+    if (Array.isArray(currentWord)) {
+      isCorrect = currentWord.some(w =>
+        caseToggle.checked ? value === w : value.toLowerCase() === w.toLowerCase()
+      );
+    } else {
+      isCorrect = caseToggle.checked
+        ? value === currentWord
+        : value.toLowerCase() === currentWord.toLowerCase();
+    }
+
+    totalCount++;
+    answerChecked = true;
+
+    if (isCorrect) {
+      feedback.textContent = "✅ Correct!";
+      correctCount++;
+    } else {
+      feedback.textContent = `❌ Try again! You typed "${value}", expected "${Array.isArray(currentWord) ? currentWord.join(' or ') : currentWord}"`;
+    }
+
+    progress.textContent = `Score: ${correctCount} / ${totalCount}`;
+    inputBox.focus();
+    isWaiting = false;
   }
 
   function splitToPhonemes(word) {
