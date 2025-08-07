@@ -93,8 +93,10 @@ function initializeAuntieReader() {
       instructionDiv.innerHTML = (!toggleExample || toggleExample.checked) ? `As in: ${entry.example}` : "";
 
       if (entry.emoji && (!toggleEmoji || toggleEmoji.checked)) {
+        imageElement.innerHTML = `${entry.emoji}`;
+        imageElement.style.fontSize = "64px";
+        imageElement.style.margin = "10px 0";
         imageElement.style.display = "block";
-        imageElement.outerHTML = `<div id="exampleImage" style="font-size: 64px; margin: 10px 0;">${entry.emoji}</div>`;
       } else {
         imageElement.style.display = "none";
       }
