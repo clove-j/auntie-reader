@@ -11,9 +11,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const audio = document.getElementById("loadingSound");
 
   Promise.all([
-    fetch('./decks/alphabet-full.json').then(res => res.json()),
-    fetch('./decks/english.json').then(res => res.json()),
     fetch('./decks/alphabet-phonics-fixed.json').then(res => res.json()),
+    fetch('./decks/english.json').then(res => res.json()),
     fetch('./decks/basic-sentences.json').then(res => res.json())
   ]).then(([alphabet, words, phonics, sentences]) => {
     alphabetDeck = alphabet;
