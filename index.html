@@ -54,7 +54,6 @@
   <!-- 🔄 Loading Screen -->
   <div id="loader">
     <img src="auntie_reader_loading.gif" alt="Loading Auntie Reader..." />
-    <audio id="loadingSound" src="rain_fadeout.wav" autoplay></audio>
   </div>
 
   <!-- 📚 Main App -->
@@ -68,10 +67,9 @@
 
     <h2>Select Mode:</h2>
     <select id="modeSelect">
-      <option value="alphabet">Alphabet Only</option>
-      <option value="phonics">Phonics Alphabet</option>
+      <option value="phonics" selected>Phonics Alphabet</option>
       <option value="words">Words Only</option>
-      <option value="mixed" selected>Mixed</option>
+      <option value="mixed">Mixed</option>
       <option value="sentences">Sentences</option>
     </select>
 
