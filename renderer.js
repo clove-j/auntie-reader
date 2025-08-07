@@ -1,4 +1,4 @@
-// Enhanced Auntie Reader App JavaScript with Clickable Letter Phonics Playback and UI Toggles
+// Enhanced Auntie Reader App JavaScript with Clickable Letter Phonics Playback, UI Toggles, and Accessibility Improvements
 let alphabetDeck = [], wordDeck = [], phonicsDeck = [], sentenceDeck = [];
 let currentWord = "";
 let currentDeck = [];
@@ -6,13 +6,15 @@ let mistakes = [];
 let currentEntry = null;
 
 const audioEnabledToggle = document.getElementById("audioEnabledToggle");
+const correctSound = new Audio("./audio/correct.mp3");
+const incorrectSound = new Audio("./audio/incorrect.mp3");
 
 window.addEventListener('DOMContentLoaded', () => {
   const loader = document.getElementById("loader");
   const app = document.getElementById("app");
   const audio = document.getElementById("loadingSound");
 
-  loader.innerText = "Loading Auntie Reader..."; // simple text
+  loader.innerText = "Loading Auntie Reader...";
 
   Promise.all([
     fetch('./decks/phonics-alphabet.json').then(res => res.json()),
@@ -47,6 +49,7 @@ function initializeAuntieReader() {
   const imageElement = document.getElementById("exampleImage");
   const nextButton = document.getElementById("nextButton");
   const repeatButton = document.getElementById("repeatButton");
+  const mistakesList = document.getElementById("mistakesList");
 
   const toggleLetter = document.getElementById("toggleLetter");
   const toggleEmoji = document.getElementById("toggleEmoji");
@@ -181,15 +184,27 @@ function initializeAuntieReader() {
     if (isCorrect) {
       feedback.textContent = "✅ Correct!";
       correctCount++;
+      correctSound.play();
     } else {
       feedback.textContent = `❌ Try again! You typed "${value}", expected "${Array.isArray(currentWord) ? currentWord.join(' or ') : currentWord}"`;
       mistakes.push({ prompt: promptDiv.innerText, typed: value, expected: currentWord });
-      console.log("Mistakes so far:", mistakes);
+      updateMistakesList();
+      incorrectSound.play();
     }
 
     progress.textContent = `Score: ${correctCount} / ${totalCount}`;
     inputBox.focus();
     isWaiting = false;
+  }
+
+  function updateMistakesList() {
+    if (!mistakesList) return;
+    mistakesList.innerHTML = "<h3>Mistakes:</h3>";
+    mistakes.forEach((m, i) => {
+      const li = document.createElement("li");
+      li.textContent = `${i + 1}. Prompt: ${m.prompt}, Typed: "${m.typed}", Expected: "${Array.isArray(m.expected) ? m.expected.join(' or ') : m.expected}"`;
+      mistakesList.appendChild(li);
+    });
   }
 
   function splitToPhonemes(word) {
